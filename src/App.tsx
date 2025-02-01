@@ -28,7 +28,7 @@ export default function App() {
         target: target.current!,
         grid: true,
         width: (contentsBounds.width * 2) / 3,
-        height: contentsBounds.height,
+        height: contentsBounds.height - 50,
         yAxis: {
           domain: [-10, 10],
         },
@@ -39,7 +39,7 @@ export default function App() {
         tip: {
           xLine: true,
           yLine: true,
-          renderer(x, y, index) {
+          renderer(x, y) {
             if (Math.floor(Math.abs(y)) == 0) {
               return `(${x}, ${y})`;
             }
@@ -53,48 +53,50 @@ export default function App() {
   });
 
   return (
-    <div className="App">
-      <div className="formula">
-        <button
-          onClick={() => {
-            setFormula([
-              ...formula,
-              someDefaultFunctions[
-                Math.floor(Math.random() * someDefaultFunctions.length)
-              ],
-            ]);
-          }}
-          className="add-button"
-        >
-          + (will be random the random function)
-        </button>
-        {formula.map((f, i) => (
-          <div className="formula-item" key={i}>
-            <input
-              type="text"
-              value={formula[i]}
-              onChange={(e) =>
-                setFormula([
-                  ...formula.slice(0, i),
-                  e.target.value,
-                  ...formula.slice(i + 1),
-                ])
-              }
-            />
-            <button
-              key={i}
-              onClick={() => {
-                const newFormula = [...formula];
-                newFormula.splice(i, 1);
-                setFormula(newFormula);
-              }}
-            >
-              x
-            </button>
-          </div>
-        ))}
+    <>
+      <div className="App">
+        <div className="formula">
+          <button
+            onClick={() => {
+              setFormula([
+                ...formula,
+                someDefaultFunctions[
+                  Math.floor(Math.random() * someDefaultFunctions.length)
+                ],
+              ]);
+            }}
+            className="add-button"
+          >
+            + (will be random the random function)
+          </button>
+          {formula.map((_, i) => (
+            <div className="formula-item" key={i}>
+              <input
+                type="text"
+                value={formula[i]}
+                onChange={(e) =>
+                  setFormula([
+                    ...formula.slice(0, i),
+                    e.target.value,
+                    ...formula.slice(i + 1),
+                  ])
+                }
+              />
+              <button
+                key={i}
+                onClick={() => {
+                  const newFormula = [...formula];
+                  newFormula.splice(i, 1);
+                  setFormula(newFormula);
+                }}
+              >
+                x
+              </button>
+            </div>
+          ))}
+        </div>
+        <div ref={target} className="plot" />
       </div>
-      <div ref={target} className="plot" />
-    </div>
+    </>
   );
 }
